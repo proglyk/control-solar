@@ -70,7 +70,7 @@ void
 	pxStruct->pxSources[CH1]->pbEnable = &(pxParams->Page0.fMPPT1);
 	pxStruct->pxSources[CH1]->eStatus = MPP_DIS;
 	
-	pxStruct->pxSources[CH1]->psPwm = &(pxParams->Page0.RegTemp1);
+	pxStruct->pxSources[CH1]->usPwm = 0;
 	
 	pxStruct->pxSources[CH1]->pxMppPI = &(stPI_UMPPT1);
 	pxStruct->pxSources[CH1]->pxUbatPI = &(stPI_UBAT1);
@@ -86,7 +86,7 @@ void
 	pxStruct->pxSources[CH2]->pbEnable = &(pxParams->Page0.fMPPT2);
 	pxStruct->pxSources[CH2]->eStatus = MPP_DIS;
 	
-	pxStruct->pxSources[CH2]->psPwm = &(pxParams->Page0.RegTemp2);
+	pxStruct->pxSources[CH2]->usPwm = 0;
 	
 	// разобраться stPI_UBAT1 использовать для обоих каналов, или по отдельности?
 	pxStruct->pxSources[CH2]->pxMppPI = &(stPI_UMPPT2);

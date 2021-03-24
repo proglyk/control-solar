@@ -52,17 +52,17 @@ extern "C" {
 // 16 = lowest priority
 #define	INT1PL      16        // Group1 Interrupts (PIEIER1)
 #define	INT2PL      0        // Group2 Interrupts (PIEIER2)
-#define	INT3PL      11        // Group3 Interrupts (PIEIER3)
+#define	INT3PL      13        // Group3 Interrupts (PIEIER3)
 #define	INT4PL      0        // Group4 Interrupts (PIEIER4)
 #define	INT5PL      0        // Group5 Interrupts (PIEIER5)
 #define	INT6PL      0        // Group6 Interrupts (PIEIER6)
 #define	INT7PL      0        // reserved
-#define	INT8PL      12        // reserved
-#define	INT9PL      13        // Group9 Interrupts (PIEIER9)
+#define	INT8PL      14        // reserved
+#define	INT9PL      15        // Group9 Interrupts (PIEIER9)
 #define	INT10PL     0        // reserved
 #define	INT11PL     0        // reserved
 #define	INT12PL     0        // reserved
-#define	INT13PL     14        // XINT13
+#define	INT13PL     15        // XINT13
 #define	INT14PL     15        // INT14 (TINT2)
 #define	INT15PL     0        // DATALOG
 #define	INT16PL     0        // RTOSINT
@@ -107,8 +107,8 @@ extern "C" {
 #define	G13PL       0        // reserved
 #define	G14PL       1        // XINT1       (External)
 #define	G15PL       3        // XINT2       (External)
-#define	G16PL       1        // ADCINT      (ADC)
-#define	G17PL       2        // TINT0       (CPU Timer 0)
+#define	G16PL       2        // ADCINT      (ADC)
+#define	G17PL       1        // TINT0       (CPU Timer 0)
 #define	G18PL       5        // WAKEINT     (WD/LPM)
 
 #define	G21PL       4        // EPWM1_TZINT (ePWM1 Trip)
@@ -122,8 +122,8 @@ extern "C" {
 
 #define	G31PL       1        // EPWM1_INT   (ePWM1 Int)
 #define	G32PL       0        // EPWM2_INT   (ePWM2 Int)
-#define	G33PL       2        // EPWM3_INT   (ePWM3 Int)
-#define	G34PL       3        // EPWM4_INT   (ePWM4 Int)
+#define	G33PL       1        // EPWM3_INT   (ePWM3 Int)
+#define	G34PL       1        // EPWM4_INT   (ePWM4 Int)
 #define	G35PL       0        // EPWM5_INT   (ePWM5 Int)
 #define	G36PL       0        // EPWM6_INT   (ePWM6 Int)
 #define	G37PL       0        // reserved

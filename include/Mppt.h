@@ -32,7 +32,5 @@ void
 
 void
 	Charge_MPPT_v3(ChargeControl * pxStruct, CurrentMode_t mode);
-void
-	Charge_MPPT_v3_1(ChargeControl * pxStruct, CurrentMode_t mode);
 
 #endif

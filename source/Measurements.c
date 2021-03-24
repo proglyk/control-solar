@@ -97,8 +97,10 @@ Measurement(void)
 		tmp_val_q13s = _IQ13div(tmp_val_q13[5], _IQ13(47.6));	// основной кф
 		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(10));		// масштабирующий кф для пульта
 		
-		if (cnt1 == 0)
-			Params.Page0.RegSTBN = (int16)(_IQ13int(tmp_val_q13s));
+		// TEMPORARY
+		//if (cnt1 == 0)
+		//	Params.Page0.RegSTBN = (int16)(_IQ13int(tmp_val_q13s));
+		Params.Page0.RegSTBN = 520;
 		
 /*************************************************************************************************/		
 		// A7:	currentBridge	IINVN
@@ -173,8 +175,9 @@ Measurement(void)
 		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(10));
 		
 		//замедлить обновление на экране
-		if (cnt1 == 0)
-			Params.Page0.RegSB2N = (int16)(_IQ13int(tmp_val_q13s));
+		//if (cnt1 == 0)
+		//	Params.Page0.RegSB2N = (int16)(_IQ13int(tmp_val_q13s));
+		Params.Page0.RegSB2N = 1500;
 
 /*************************************************************************************************/			
 		
@@ -190,8 +193,10 @@ Measurement(void)
 		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(10));
 		
 		//замедлить обновление на экране
-		if (cnt1 == 0)
-			Params.Page0.RegSB1N = (int16)(_IQ13int(tmp_val_q13s));
+		// TEMPORARY
+		//if (cnt1 == 0)
+		//	Params.Page0.RegSB1N = (int16)(_IQ13int(tmp_val_q13s));
+		Params.Page0.RegSB1N = 1500;
 		
 /*************************************************************************************************/
 		

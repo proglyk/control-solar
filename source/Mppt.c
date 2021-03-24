@@ -2,7 +2,6 @@
 #include "Epwm.h"
 #include "faults.h"
 
-//extern PControl_t PControl;
 extern CrashNotice_t Fault;
 extern ParamsTable_t Params;
 extern struct sFaults Faults;
@@ -14,7 +13,7 @@ static
 	void Mppt_Clear(SourcePtr pxSource) {
 	
 	pxSource->eStatus = MPP_DIS;
-	*(pxSource->psPwm) = 0;
+	pxSource->usPwm = 0;
 	
 	pxSource->pxMppPI->Integral_Sum = 0;
 	pxSource->pxUbatPI->Integral_Sum = 0;
@@ -36,38 +35,6 @@ static void
 	
 	dest->Integral_Sum = 
 		_IQ15mpy(value, _IQ15div(dest->Upper_Limit, src->Upper_Limit));
-}
-
-void
-	Charge_MPPT_v3_1(ChargeControl * pxStruct, CurrentMode_t mode) {
-	
-	//SourcePtr pxPtr = pxStruct->pxSources[CH1];
-	//SourcePtr pxPtr = &pxStruct->xSource1;
-	//SourcePtr pxPtr = &(Params.ChargeControl.xSource1);
-	SourcePtr pxPtr = pxStruct->pxSources[CH1];
-	_iq15 regul = 0;
-	
-	if (mode == RUN) {
-		//1. Для инверсного ПИ-рег уставку оставляем прежней...
-		pxPtr->pxMppPI->Reference = _IQ15(*(pxPtr->psUMPP));
-		//pxPtr->pxMppPI->Reference = _IQ15(1250);
-		
-		//2. ... но входной сигнал зануляем или уравниваем с уставкой.
-		// В результате получается ошибка с минусом и регулятор быстро выводится
-		// в нуль или стоит на месте.
-		//2.3. обычный режим MPP, когда рег. догоняет уставку
-		regul = RegulatorPI(pxPtr->pxMppPI, _IQ15(*(pxPtr->psSBxN)));
-		pxPtr->eStatus = MPP_NORM;
-		
-		//3. Масштаб
-		regul = _IQ15mpy(regul, _IQ15div(_IQ15(425), pxPtr->pxMppPI->OutLimitMax));
-		
-		* (pxPtr->psPwm) = _IQ15int(regul);
-		//pxPtr->iqMutualInt = pxPtr->pxMppPI->Integral_Sum;
-	} else {
-		// Очищаем оба канала
-		Mppt_Clear(pxStruct->pxSources[CH1]);
-	}
 }
 
 
@@ -150,7 +117,9 @@ void
 						//3. Масштаб
 						regul = _IQ15mpy(regul, _IQ15div(_IQ15(425), pxPtr->pxMppPI->OutLimitMax));
 						
-						* (pxPtr->psPwm) = _IQ15int(regul);
+						pxPtr->usPwm = _IQ15int(_IQ15mpy(_IQ15div(regul, _IQ15(500)), _IQ15(MPPT_TBPRD)));
+						if (pxPtr->usPwm > MPPT_TBPRD) 
+							pxPtr->usPwm = MPPT_TBPRD;
 						pxPtr->iqMutualInt = pxPtr->pxMppPI->Integral_Sum;
 					} break;
 					
@@ -181,7 +150,9 @@ void
 						//3. Масштаб
 						regul = _IQ15mpy(regul, _IQ15div(_IQ15(425), pxPtr->pxUbatPI->OutLimitMax));
 						
-						* (pxPtr->psPwm) = _IQ15int(regul);
+						pxPtr->usPwm = _IQ15int(_IQ15mpy(_IQ15div(regul, _IQ15(500)), _IQ15(MPPT_TBPRD)));
+						if (pxPtr->usPwm > MPPT_TBPRD) 
+							pxPtr->usPwm = MPPT_TBPRD;
 						pxPtr->iqMutualInt = pxPtr->pxUbatPI->Integral_Sum;
 					} break;
 				}
@@ -197,110 +168,6 @@ void
 		Mppt_Clear(pxStruct->pxSources[CH2]);
 	}
 }
-
-
-/*
-	Зарядка
-*/
-/*
-void
-	Charge_MPPT_v2(struct BatteryControlBlock_st * p_con) {
-	
-	//static _iq15 qMainIntegrator = 0;
-	_iq15 regul;
-	
-	if (*(p_con->p_channel) & (Params.Page0.Mode == RUN)) {
-		//выбор режима работы
-		if (Schmitt(&(p_con->stUBatSet), _IQ15(*(p_con->psSTBN)), p_con->psVBAT)) {
-			if (p_con->Stage != MPPT_CHARGESTAGE_DCVOLTAGE) {
-				p_con->Stage = MPPT_CHARGESTAGE_DCVOLTAGE;
-				p_con->p_pi_u->Integral_Sum = _IQ15mpy(p_con->qMainIntegrator, 
-					_IQ15div(p_con->p_pi_u->Upper_Limit, p_con->p_pi_mpp->Upper_Limit));
-			}
-		} else {
-			if (p_con->Stage != MPPT_CHARGESTAGE_MPPT) {
-				p_con->Stage = MPPT_CHARGESTAGE_MPPT;
-				p_con->p_pi_mpp->Integral_Sum = _IQ15mpy(p_con->qMainIntegrator, 
-					_IQ15div(p_con->p_pi_mpp->Upper_Limit, p_con->p_pi_u->Upper_Limit));
-			}
-		}
-		
-		switch (p_con->Stage) {
-			//работа режима mppt
-			case (MPPT_CHARGESTAGE_MPPT): {
-				
-				//1. Для инверсного ПИ-рег уставку оставляем прежней...
-				p_con->p_pi_mpp->Reference = _IQ15(*(p_con->p_reg_SOLBAT_U_MPP));
-				
-				//2. ... но входной сигнал зануляем или уравниваем с уставкой.
-				// В результате получается ошибка с минусом и регулятор быстро выводится
-				// в нуль или стоит на месте.
-				if ( *(p_con->psIOxN) >= *(p_con->p_reg_SOLBAT_I_KZ) ) {
-					//2.1. вывод в 0 при достижении тока КЗ батарей
-					regul = RegulatorPI(p_con->p_pi_mpp, _IQ15(0));
-					p_con->StageMPP = MPP_KZ;
-				}
-				else if ((*(p_con->psIOxN) >= *(p_con->p_reg_SOLBAT_I_MPP)) & 
-					(*(p_con->psIOxN) < *(p_con->p_reg_SOLBAT_I_KZ))) {
-					//2.2. стоянка на месте в точке MPP если ток равен или больше тока MPP
-					regul = RegulatorPI(p_con->p_pi_mpp, _IQ15(*(p_con->p_reg_SOLBAT_U_MPP)));
-					p_con->StageMPP = MPP_STAB;
-				}
-				else {
-					//2.3. обычный режим MPP, когда рег. догоняет уставку
-					regul = RegulatorPI(p_con->p_pi_mpp, _IQ15(*(p_con->psSBxN)));
-					p_con->StageMPP = MPP_NORM;
-				}
-				
-				//3. Масштаб
-				regul = _IQ15mpy(regul, _IQ15div(_IQ15(425), p_con->p_pi_mpp->OutLimitMax));
-				
-				* (p_con->p_reg_pwm) = _IQ15int(regul);
-				p_con->qMainIntegrator = p_con->p_pi_mpp->Integral_Sum;
-			} break;
-			
-			//работа режима стабилизации напряжения
-			case (MPPT_CHARGESTAGE_DCVOLTAGE): {
-				
-				//1. Для прямого ПИ-рег уставку наоборот зануляем...
-				if ( *(p_con->psIOxN) >= *(p_con->p_reg_SOLBAT_I_KZ) ) {
-					//1.1. вывод в 0 при достижении тока КЗ батарей
-					p_con->p_pi_u->Reference = _IQ15(0);
-					p_con->StageMPP = MPP_KZ;
-				} else if ((*(p_con->psIOxN) >= *(p_con->p_reg_SOLBAT_I_MPP)) & 
-					(*(p_con->psIOxN) < *(p_con->p_reg_SOLBAT_I_KZ))) {
-					//1.2. стоянка на месте в точке MPP если ток равен или больше тока MPP
-					p_con->p_pi_u->Reference = _IQ15(*(p_con->psSTBN));
-					p_con->StageMPP = MPP_STAB;
-				} else {
-					//1.3. обычный режим MPP, когда рег. догоняет уставку
-					//p_con->p_pi_u->Reference = p_con->stUBatSet.value;
-					p_con->p_pi_u->Reference = _IQ15(*(p_con->psVBAT));
-					p_con->StageMPP = MPP_NORM;
-				}
-				
-				//2. ... а вх.сигнал оставляем без изм. В результате получается ошибка с 
-				// минусом и регулятор быстро выводится в нуль.
-				regul = RegulatorPI(p_con->p_pi_u, _IQ15(*(p_con->psSTBN)));
-				
-				//3. Масштаб
-				regul = _IQ15mpy(regul, _IQ15div(_IQ15(425), p_con->p_pi_u->OutLimitMax));
-				
-				* (p_con->p_reg_pwm) = _IQ15int(regul);
-				p_con->qMainIntegrator = p_con->p_pi_u->Integral_Sum;
-			} break;
-		}
-	}
-	else
-	{
-		p_con->qMainIntegrator = 0;
-		*(p_con->p_reg_pwm) = 0;
-		p_con->p_pi_u->Integral_Sum = 0;
-		p_con->p_pi_mpp->Integral_Sum = 0;
-		p_con->Stage = MPPT_CHARGESTAGE_DISABLED;
-		p_con->StageMPP = MPP_DIS;
-	}
-}*/
 
 
 bool
@@ -353,6 +220,8 @@ EPWM3_ServiceRoutine(void)
 	Uint16 Pwm;
 	int32 i32PulseWight = 0;
 	static bool xor0 = false, xor1 = false;
+/*----------------------------------------------------------------------------*/
+	//GpioDataRegs.GPBSET.bit.GPIO34 = 1;
 	
 	//tmp0 = MPPT1(tempISense_MPPT1, tempUSense_MPPT1);
 	//BuckConv_RegulateMPPT_vers1(0, tmp0, &i32PulseWight);
@@ -390,9 +259,7 @@ EPWM3_ServiceRoutine(void)
 					EPwm3Regs.CMPA.half.CMPA = Pwm;
 					*/
 					
-					Pwm = _IQ15int(_IQ15mpy(_IQ15div(_IQ15(Params.Page0.RegTemp1), _IQ15(500)), _IQ15(MPPT_TBPRD)));
-					if (Pwm > MPPT_TBPRD) Pwm = MPPT_TBPRD;
-					EPwm3Regs.CMPA.half.CMPA = Pwm;
+					EPwm3Regs.CMPA.half.CMPA = Params.ChargeControl.pxSources[CH1]->usPwm;
 					
 				}
 			}
@@ -422,6 +289,9 @@ EPWM3_ServiceRoutine(void)
 			break;
 		}
 	}
+	
+	//GpioDataRegs.GPBCLEAR.bit.GPIO34 = 1;
+/*----------------------------------------------------------------------------*/
 }
 
 /*
@@ -469,11 +339,7 @@ EPWM4_ServiceRoutine(void)
 					//if (Pwm > 100) Pwm = 100;
 					EPwm4Regs.CMPA.half.CMPA = Pwm;*/
 					
-					
-					Pwm = _IQ15int(_IQ15mpy(_IQ15div(_IQ15(Params.Page0.RegTemp2), _IQ15(500)), _IQ15(MPPT_TBPRD)));
-					if (Pwm > MPPT_TBPRD) Pwm = MPPT_TBPRD;
-					EPwm4Regs.CMPA.half.CMPA = Pwm;
-					
+					EPwm4Regs.CMPA.half.CMPA = Params.ChargeControl.pxSources[CH2]->usPwm;
 				}
 			}
 			else

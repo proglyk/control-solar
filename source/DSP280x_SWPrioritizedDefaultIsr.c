@@ -121,8 +121,8 @@ interrupt void ILLEGAL_ISR(void)   // Illegal operation TRAP
 
     // Next two lines for debug only to halt the processor here
     // Remove after inserting ISR Code
-    asm ("      ESTOP0");
-    for(;;);
+    //asm ("      ESTOP0");
+   // for(;;);
 }
 
 
@@ -134,8 +134,8 @@ interrupt void USER1_ISR(void)     // User Defined trap 1
 
     // Next two lines for debug only to halt the processor here
     // Remove after inserting ISR Code
-    asm ("      ESTOP0");
-    for(;;);
+    //asm ("      ESTOP0");
+    //for(;;);
 }
 
 interrupt void USER2_ISR(void)     // User Defined trap 2

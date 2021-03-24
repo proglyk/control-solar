@@ -133,8 +133,8 @@ typedef struct {
 	// состояние текущего режима. (Норм, К.З. и т.д.)
 	MpptStatus 			eStatus;
 	
-	// Указатель на регистр с кф.ШИМ
-	int16 * 				psPwm;
+	// Готовый для исп. кф ШИМ.
+	Uint16					usPwm;
 	
 	// Указатель на ПИ-регул. режима MPP
 	RegulatorPi_t * pxMppPI;

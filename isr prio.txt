@@ -1,0 +1,13 @@
+
+0 - нижайший
+
+
+
+2:	ADC
+3:	INT0
+
+
+
+
+x:	PIEIER1.bit.INTx7	TINT0
+x:	PIEIER1.bit.INTx6 ADCINT

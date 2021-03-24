@@ -65,10 +65,16 @@ main(void)
 	
 	InitSysCtrl();
 	
-	EALLOW;
+	EALLOW;	
 	GpioCtrlRegs.GPAPUD.bit.GPIO10 = 0;		//No pull-up
 	GpioCtrlRegs.GPAMUX1.bit.GPIO10 = 0;   	//Configure Pin as GPIO
 	GpioCtrlRegs.GPADIR.bit.GPIO10 = 1;		//Configure as Output
+	GpioCtrlRegs.GPAPUD.bit.GPIO11 = 0;		//No pull-up
+	GpioCtrlRegs.GPAMUX1.bit.GPIO11 = 0;   	//Configure Pin as GPIO
+	GpioCtrlRegs.GPADIR.bit.GPIO11 = 1;		//Configure as Output
+	GpioCtrlRegs.GPAPUD.bit.GPIO7 = 0;		//No pull-up
+	GpioCtrlRegs.GPAMUX1.bit.GPIO7 = 0;   	//Configure Pin as GPIO
+	GpioCtrlRegs.GPADIR.bit.GPIO7 = 1;		//Configure as Output
 	
 	GpioCtrlRegs.GPBMUX1.bit.GPIO34 = 0;
 	GpioCtrlRegs.GPBDIR.bit.GPIO34 = 1;
@@ -140,9 +146,9 @@ main(void)
 	EPwm3Timer_Config();
 	EPwm4Timer_Config();
 	
-	InitI2CGpio();
+//	InitI2CGpio();
 	
-	MemEEPROM_Init();
+//	MemEEPROM_Init();
 	
 	//ConvertInit();
 	
@@ -179,10 +185,9 @@ main(void)
 	PieCtrlRegs.PIEIER1.bit.INTx6 = 1;	//ADCINT
 	PieCtrlRegs.PIEIER1.bit.INTx7 = 1;	//TINT0
 	PieCtrlRegs.PIEIER3.bit.INTx1 = 1;	//EPWM1_INT
-//	PieCtrlRegs.PIEIER3.bit.INTx2 = 1;	//EPWM2_INT
 	PieCtrlRegs.PIEIER3.bit.INTx3 = 1;	//EPWM3_INT
 	PieCtrlRegs.PIEIER3.bit.INTx4 = 1;	//EPWM4_INT
-	PieCtrlRegs.PIEIER8.bit.INTx1 = 1;	//I2CINT1A
+//	PieCtrlRegs.PIEIER8.bit.INTx1 = 1;	//I2CINT1A
 	PieCtrlRegs.PIEIER9.bit.INTx1 = 1;	//SCIRXINTA
 	PieCtrlRegs.PIEIER9.bit.INTx2 = 1;	//SCITXINTA
 	PieCtrlRegs.PIEIER9.bit.INTx3 = 1;	//SCIRXINTB
@@ -191,22 +196,26 @@ main(void)
 	PieCtrlRegs.PIEACK.all = 0xffff;
 	
 	ADC_Config_SOC();
-	//InitAdc();
 	
-	IER = M_INT1 | M_INT3 | M_INT8 | M_INT9 | M_INT13 | M_INT14;
+//	IER = M_INT1 | M_INT3 | M_INT8 | M_INT9 | M_INT13 | M_INT14;
+	IER = M_INT1 | M_INT3 | M_INT9 | M_INT13 | M_INT14;
+	//IER = M_INT1 | M_INT3 | M_INT9 | M_INT14;
+	//IER = M_INT1 | M_INT3;
 	
 	EINT;
 	ERTM;
 	
-	Memory_ReadNew(&I2C_EepromAT24C512, 0, 128);
+//	Memory_ReadNew(&I2C_EepromAT24C512, 0, 128);
 	pMsg1->User.ReqToRead = 1;
 
 	StartCpuTimer0();
-	//StartCpuTimer1();
-	//StartCpuTimer2();
+	//StartCpuTimer1(); - SCIA включит сам, когда надо
+	//StartCpuTimer2(); - SCIB включит сам, когда надо
 	
 	for (;;)
 	{
+		GpioDataRegs.GPATOGGLE.bit.GPIO11 = 1;
+		
 		if (ptSciSlave1->LookForTxEmpty == true)
 		{
 			i = ptSciSlave1->ptSciRegs->SCICTL2.all;
@@ -277,18 +286,28 @@ Timer0Int(void)
 {	
 	static Uint16 cnt = 0;
 	static int16 temp = 0;
-	
-	//GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;
-	//GpioDataRegs.GPBCLEAR.bit.GPIO34 = 1;
+
+/*----------------------------------------------------------------------------*/
+	GpioDataRegs.GPASET.bit.GPIO10 = 1;
 	
 	Sensor();
-
-	//if (cnt == 0)
 	Measurement();
+//	I2C_Sheduler();
 
-	I2C_Sheduler();
+	if (cnt > 20)	{
+		//Заряжалка
+		Charge_MPPT_v3(&(Params.ChargeControl), Params.Page0.Mode);
+		// Выходное
+		Invertor();
+		// Реле
+		Relay();
+		cnt = 0;
+	} else {
+		cnt += 1;
+	}
 	
-	asm("	NOP");
+	GpioDataRegs.GPACLEAR.bit.GPIO10 = 1;
+/*----------------------------------------------------------------------------*/
 
 #if defined RT_MODE
 	if (usCountLed > 1000) {
@@ -296,29 +315,13 @@ Timer0Int(void)
 	if (usCountLed > 500) {
 #endif
 		//GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;
+		//GpioDataRegs.GPATOGGLE.bit.GPIO10 = 1;
 		usCountLed=0;
 	} else {
 		usCountLed++;
 	}
 	
 	
-	
-	if (cnt > 20)	{
-		//Заряжалка
-		Charge_MPPT_v3(&(Params.ChargeControl), Params.Page0.Mode);
-		
-		// Выходное
-		Invertor();
-		
-		// Реле
-		Relay();
-		
-		cnt = 0;
-	}
-	else
-	{
-		cnt += 1;
-	}
 }
 
 void

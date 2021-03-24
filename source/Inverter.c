@@ -44,7 +44,8 @@ Inverter_ServiceRoutine(void)
 	volatile Uint16 sine;
 	static bool xor0 = false, xor1 = false;
 	
-	/**/
+/*----------------------------------------------------------------------------*/
+	GpioDataRegs.GPBSET.bit.GPIO34 = 1;
 	
 	sine = SineInverting(_IQdiv(_IQ(Params.Page0.RegTemp0), _IQ(500)));
 	//sine = SineInverting(_IQdiv(_IQ(Params.Page0.Reg0), _IQ(100)));
@@ -122,5 +123,8 @@ Inverter_ServiceRoutine(void)
 			break; // default
 		}
 	}
+	
+		GpioDataRegs.GPBCLEAR.bit.GPIO34 = 1;
+/*----------------------------------------------------------------------------*/
 }
 /**/

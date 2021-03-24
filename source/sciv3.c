@@ -29,10 +29,10 @@ SciSlave_Receive(SciSlave_t* slave)
 	
 	byte = ((slave->ptSciRegs->SCIRXBUF.all) & 0xff);
 	
-	if (slave->Name == SCI_PULT)
-	{
-		GpioDataRegs.GPATOGGLE.bit.GPIO10 = 1;
-	}
+	//if (slave->Name == SCI_PULT)
+	//{
+	//	GpioDataRegs.GPATOGGLE.bit.GPIO10 = 1;
+	//}
 	
 	
 	/*	Обработка первого байта */
@@ -40,7 +40,7 @@ SciSlave_Receive(SciSlave_t* slave)
 	{
 		slave->DataReceive[slave->BytesCounter] = byte;
 		
-		GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;
+		//GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;
 		
 		if ( slave->DataReceive[slave->BytesCounter] == slave->ID )
 		{
@@ -140,10 +140,10 @@ SciSlave_Transmit(SciSlave_t* slave)
 	//static Uint16 byteCnt = 1;
 	//slave->ByteCntTx = 1;
 	
-	if (slave->Name == SCI_PULT)
-	{
-		GpioDataRegs.GPATOGGLE.bit.GPIO10 = 1;
-	}
+	//if (slave->Name == SCI_PULT)
+	//{
+	//	GpioDataRegs.GPATOGGLE.bit.GPIO10 = 1;
+	//}
 	
 	
 	if (slave->ByteCntTx == slave->DataTransmitLenght){
@@ -165,10 +165,10 @@ SciSlave_StopTimer35T(SciSlave_t* slave)
 {
 	static Error_t err;
 	
-	if (slave->Name == SCI_PULT)
-	{
-		GpioDataRegs.GPATOGGLE.bit.GPIO10 = 1;
-	}
+	//if (slave->Name == SCI_PULT)
+	//{
+	//	GpioDataRegs.GPATOGGLE.bit.GPIO10 = 1;
+	//}
 	
 	/*	Выключить Таймер */
 	slave->ptCpuTimer->RegsAddr->TCR.bit.TSS = 1;
@@ -381,10 +381,10 @@ SciSlave_FunctionX04(SciSlave_t* slave)
 	memset(p_txFrame, 0, (2*regNumber + 5)*sizeof(Uint8));
 	memset(pInvState, 0, (2*SLAVE_4FUNC_DATA_MAX_NUM)*sizeof(Uint8));
 	
-	if (slave->Name == SCI_PULT)
-	{
-		GpioDataRegs.GPATOGGLE.bit.GPIO10 = 1;
-	}
+	//if (slave->Name == SCI_PULT)
+	//{
+	//	GpioDataRegs.GPATOGGLE.bit.GPIO10 = 1;
+	//}
 	
 	// WORD 0 MODBUS_REG_TIME1
 	Tmp = DEC_to_BCD(Params.DateTime.Second, 0);
@@ -521,12 +521,12 @@ SciSlave_FunctionX04(SciSlave_t* slave)
 	pInvState[(2*MODBUS_REG_DEBUG_TEMP0)+1] = (Uint8)(Params.Page0.RegTemp0 & 0x00ff);
 	
 	// WORD 31 MODBUS_REG_DEBUG_TEMP1
-	pInvState[(2*MODBUS_REG_DEBUG_TEMP1)] = (Uint8)((Params.Page0.RegTemp1 & 0xff00) >> 8);
-	pInvState[(2*MODBUS_REG_DEBUG_TEMP1)+1] = (Uint8)(Params.Page0.RegTemp1 & 0x00ff);
+	pInvState[(2*MODBUS_REG_DEBUG_TEMP1)] = (Uint8)((Params.ChargeControl.pxSources[CH1]->usPwm & 0xff00) >> 8);
+	pInvState[(2*MODBUS_REG_DEBUG_TEMP1)+1] = (Uint8)(Params.ChargeControl.pxSources[CH1]->usPwm & 0x00ff);
 	
 	// WORD 32 MODBUS_REG_DEBUG_TEMP2
-	pInvState[(2*MODBUS_REG_DEBUG_TEMP2)] = (Uint8)((Params.Page0.RegTemp2 & 0xff00) >> 8);
-	pInvState[(2*MODBUS_REG_DEBUG_TEMP2)+1] = (Uint8)(Params.Page0.RegTemp2 & 0x00ff);
+	pInvState[(2*MODBUS_REG_DEBUG_TEMP2)] = (Uint8)((Params.ChargeControl.pxSources[CH2]->usPwm & 0xff00) >> 8);
+	pInvState[(2*MODBUS_REG_DEBUG_TEMP2)+1] = (Uint8)(Params.ChargeControl.pxSources[CH2]->usPwm & 0x00ff);
 	
 	// WORD 33 MODBUS_INVERTER_UOUT_SET
 	pInvState[(2*MODBUS_INVERTER_UOUT_SET)] = (Uint8)((Params.Page0.Reg_INVERTER_UOUT_SET & 0xff00) >> 8);
