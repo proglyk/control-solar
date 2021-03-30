@@ -10,8 +10,8 @@
 #define S16_MAX (32767)
 #define S16_MIN (-32768)
 
-#define Kp (0.25)
-#define KiVout (0.25)
+#define Kp (0.1)
+#define KiVout (0.5)
 #define KiImppt1 (75)
 #define KiImppt2 (75)
 

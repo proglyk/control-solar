@@ -5,8 +5,10 @@
 #include "DSP280x_Examples.h"
 #include "stdlib.h"
 
-//#define RT_MODE
-#define DBG_MODE_DIV2
+#define RT_MODE
+//#define DBG_MODE_DIV2
+
+//#define DEBUG
 
 /*
 void System_Init(void);

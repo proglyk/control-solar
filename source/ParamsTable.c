@@ -258,20 +258,17 @@ Params_WriteFromSerial(Uint16 page, Uint16 startpos, Uint16 len, Uint16 * pdata)
 						
 					case (MODBUS_REG_0):
 						Params.Page0.Reg0 = pdata[0];
-						//pPiVout->Reference = _IQ15(pdata[0]);
-						//_IQ(pPoolRegs[3])
-						Q_Store3(&I2C_EepromAT24C512, MEMADDR(MODBUS_REG_0), pdata[0]);
+						//Q_Store3(&I2C_EepromAT24C512, MEMADDR(MODBUS_REG_0), pdata[0]);
 						break;
 					
 					case (MODBUS_REG_1):
 						Params.Page0.Reg1 = pdata[0];
-						//pPiMppt1->Reference = _IQ15(pdata[0]);
-						Q_Store3(&I2C_EepromAT24C512, MEMADDR(MODBUS_REG_1), pdata[0]);
+						//Q_Store3(&I2C_EepromAT24C512, MEMADDR(MODBUS_REG_1), pdata[0]);
 						break;
 					
 					case (MODBUS_REG_2):
 						Params.Page0.Reg2 = pdata[0];
-						Q_Store3(&I2C_EepromAT24C512, MEMADDR(MODBUS_REG_2), pdata[0]);
+						//Q_Store3(&I2C_EepromAT24C512, MEMADDR(MODBUS_REG_2), pdata[0]);
 						break;
 						
 					case (MODBUS_REG_INVERTER):

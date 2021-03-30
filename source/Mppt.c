@@ -333,12 +333,12 @@ EPWM4_ServiceRoutine(void)
 					Params.Page0.fMPPT2 = 0;
 				} */
 				else {
-					
-					/*Pwm = Params.Page0.Reg2 * MPPT_TBPRD / 100;
+					/*
+					Pwm = Params.Page0.Reg2 * MPPT_TBPRD / 100;
 					if (Pwm > MPPT_TBPRD) Pwm = MPPT_TBPRD;
 					//if (Pwm > 100) Pwm = 100;
-					EPwm4Regs.CMPA.half.CMPA = Pwm;*/
-					
+					EPwm4Regs.CMPA.half.CMPA = Pwm;
+					*/
 					EPwm4Regs.CMPA.half.CMPA = Params.ChargeControl.pxSources[CH2]->usPwm;
 				}
 			}

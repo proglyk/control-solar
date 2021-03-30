@@ -98,9 +98,9 @@ Measurement(void)
 		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(10));		// масштабирующий кф для пульта
 		
 		// TEMPORARY
-		//if (cnt1 == 0)
-		//	Params.Page0.RegSTBN = (int16)(_IQ13int(tmp_val_q13s));
-		Params.Page0.RegSTBN = 520;
+		if (cnt1 == 0)
+			Params.Page0.RegSTBN = (int16)(_IQ13int(tmp_val_q13s));
+		//Params.Page0.RegSTBN = 520;
 		
 /*************************************************************************************************/		
 		// A7:	currentBridge	IINVN
@@ -152,7 +152,7 @@ Measurement(void)
 		tmp_val_q13[8] = _IQ13mpy(_IQ13(0.1), iq_tmp_val[8]) + _IQ13mpy(_IQ13(0.90), tmp_val_q13[8]);
 		
 		//при 2,62 В вход АЦП = 3580
-		tmp_val_q13s = _IQ13div(tmp_val_q13[8], _IQ13(75.8));	
+		tmp_val_q13s = _IQ13div(tmp_val_q13[8], _IQ13(189.5));	
 		
 		//масштабирующий кф для пульта
 		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(10));
@@ -174,10 +174,16 @@ Measurement(void)
 		//масштабирующий кф для пульта
 		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(10));
 		
-		//замедлить обновление на экране
-		//if (cnt1 == 0)
+		// TEMPORARY
+		if (cnt1 == 0) {
+#if defined DEBUG
+			Params.Page0.RegSB2N = 1500;
+#else
+			Params.Page0.RegSB2N = (int16)(_IQ13int(tmp_val_q13s));
+#endif
+		}
 		//	Params.Page0.RegSB2N = (int16)(_IQ13int(tmp_val_q13s));
-		Params.Page0.RegSB2N = 1500;
+		//Params.Page0.RegSB2N = 1500;
 
 /*************************************************************************************************/			
 		
@@ -192,11 +198,14 @@ Measurement(void)
 		//масштабирующий кф для пульта
 		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(10));
 		
-		//замедлить обновление на экране
 		// TEMPORARY
-		//if (cnt1 == 0)
-		//	Params.Page0.RegSB1N = (int16)(_IQ13int(tmp_val_q13s));
-		Params.Page0.RegSB1N = 1500;
+		if (cnt1 == 0) {
+#if defined DEBUG
+			Params.Page0.RegSB1N = 1500;
+#else
+			Params.Page0.RegSB1N = (int16)(_IQ13int(tmp_val_q13s));
+#endif
+		}
 		
 /*************************************************************************************************/
 		
@@ -206,7 +215,7 @@ Measurement(void)
 		tmp_val_q13[11] = _IQ13mpy(_IQ13(0.1), iq_tmp_val[11]) + _IQ13mpy(_IQ13(0.90), tmp_val_q13[11]);
 		
 		//при 2,62 В вход АЦП = 3580
-		tmp_val_q13s = _IQ13div(tmp_val_q13[11], _IQ13(75.8));	
+		tmp_val_q13s = _IQ13div(tmp_val_q13[11], _IQ13(189.5));	
 		
 		//масштабирующий кф для пульта
 		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(10));

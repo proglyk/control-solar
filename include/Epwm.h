@@ -10,7 +10,8 @@
 #define EPWM_TBPRD 690
 #define EPWM_CMPA (EPWM_TBPRD / 2)
 
-#define MPPT_TBPRD 410
+#define MPPT_TBPRD 410	//- 40 kHz не пошло. сбоила связь
+//#define MPPT_TBPRD 690
 #define MPPT_CMPA (MPPT_TBPRD / 2)
 
 void EPwm1Timer_Config(void);
