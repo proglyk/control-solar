@@ -294,17 +294,17 @@ Timer0Int(void)
 	Measurement();
 //	I2C_Sheduler();
 
-	if (cnt > 20)	{
+	//if (cnt > 5)	{
 		//Заряжалка
-		Charge_MPPT_v3(&(Params.ChargeControl), Params.Page0.Mode);
+	Charge_MPPT_v3(&(Params.ChargeControl), Params.Page0.Mode);
 		// Выходное
-		Invertor();
+	Invertor();
 		// Реле
-		Relay();
-		cnt = 0;
-	} else {
-		cnt += 1;
-	}
+	Relay();
+	//cnt = 0;
+	//} else {
+	//	cnt += 1;
+	//}
 	
 	GpioDataRegs.GPACLEAR.bit.GPIO10 = 1;
 /*----------------------------------------------------------------------------*/

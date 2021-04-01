@@ -34,6 +34,7 @@ Sensor(void)
 	// A3:	voltageLoad		~220VN
 	//iq_tempSensorValues[2] = _IQ13(AdcRegs.ADCRESULT3 >> 4);
 	s16tmp0 = (AdcRegs.ADCRESULT3 >> 4) - 2047;
+	//s16tmp0 = 2047;
 	iq_tempSensorValues[2] = _IQ13(s16tmp0);
 
 	// A4:	currentBattery	ISTBN

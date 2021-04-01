@@ -56,7 +56,7 @@ void EPwm1Timer_Config(void){
 	EPwm1Regs.ETSEL.bit.SOCAEN = 1;        // Enable SOC on A group
 	EPwm1Regs.ETSEL.bit.SOCASEL = 2;       // Select SOC from from CPMA on upcount
 	
-	EPwm1Regs.ETPS.bit.INTPRD = 2;
+	EPwm1Regs.ETPS.bit.INTPRD = 3;
 	EPwm1Regs.ETPS.bit.SOCAPRD = 1;
 	
 	EALLOW;
@@ -116,7 +116,7 @@ void EPwm2Timer_Config(void){
 	
 	EPwm2Regs.ETSEL.bit.INTSEL = 2;     //	Enable event time-base counter equal to period
 	EPwm2Regs.ETSEL.bit.INTEN = 0;		//	Interrupt Enabled
-	EPwm2Regs.ETPS.bit.INTPRD = 2;
+	EPwm2Regs.ETPS.bit.INTPRD = 3;
 	
 	EALLOW;
 	SysCtrlRegs.PCLKCR0.bit.TBCLKSYNC = 1;

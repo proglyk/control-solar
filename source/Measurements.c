@@ -62,10 +62,13 @@ Measurement(void)
 		// A3:	voltageLoad		~220VN
 		tmp_val_q13s = _IQ13sqrt(iq_tmp_val[2]);
 		
-		tmp_val_q13[2] = _IQ13mpy(_IQ13(0.1), tmp_val_q13s) + _IQ13mpy(_IQ13(0.90), tmp_val_q13[2]);
+		tmp_val_q13[2] = _IQ13mpy(_IQ13(0.5), tmp_val_q13s) + _IQ13mpy(_IQ13(0.5), tmp_val_q13[2]);
 		
 		//tmp_val_q13s = _IQ13mpy(tmp_val_q13[2], _IQ13(11.8));
-		tmp_val_q13s = _IQ13mpy(tmp_val_q13[2], _IQ13(11.22));
+		//tmp_val_q13s = _IQ13mpy(tmp_val_q13[2], _IQ13(11.22));
+		tmp_val_q13s = _IQ13mpy(tmp_val_q13[2], _IQ13(30.0));
+		tmp_val_q13s = _IQ13div(tmp_val_q13s, _IQ13(71.12));	//кф
+		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(10));		//масштабирующий кф для пульта
 		
 		if (cnt1 == 0)
 			Params.Page0.Reg220VN = (int16)(_IQ13int(tmp_val_q13s));
