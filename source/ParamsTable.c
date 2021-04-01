@@ -46,6 +46,7 @@ void
 	pxParams->Page0.Reg_SOLBAT_CH2_I_MPP = 86;
 	
 	pxParams->Page0.Reg_INVERTER_UOUT_SET = 220;
+	pxParams->Page0.Reg220VN_ENT = 0;
 	
 	// 2. Заполняем
 	pxStruct->pxSources[0] = &(pxStruct->xSource1);

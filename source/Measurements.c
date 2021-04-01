@@ -62,16 +62,28 @@ Measurement(void)
 		// A3:	voltageLoad		~220VN
 		tmp_val_q13s = _IQ13sqrt(iq_tmp_val[2]);
 		
-		tmp_val_q13[2] = _IQ13mpy(_IQ13(0.5), tmp_val_q13s) + _IQ13mpy(_IQ13(0.5), tmp_val_q13[2]);
+		//tmp_val_q13[2] = _IQ13mpy(_IQ13(0.5), tmp_val_q13s) + _IQ13mpy(_IQ13(0.5), tmp_val_q13[2]);
 		
-		//tmp_val_q13s = _IQ13mpy(tmp_val_q13[2], _IQ13(11.8));
-		//tmp_val_q13s = _IQ13mpy(tmp_val_q13[2], _IQ13(11.22));
-		tmp_val_q13s = _IQ13mpy(tmp_val_q13[2], _IQ13(15.0));
-		tmp_val_q13s = _IQ13div(tmp_val_q13s, _IQ13(71.12));	//кф
-		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(10));		//масштабирующий кф для пульта
+		// восставновление после деления на 15
+		//tmp_val_q13s = _IQ13mpy(tmp_val_q13[2], _IQ13(15.0));
+		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(15.0));
 		
-		if (cnt1 == 0)
-			Params.Page0.Reg220VN = (int16)(_IQ13int(tmp_val_q13s));
+		//кф перевод Vadc -> Vreal для удобства проверки на месте. (значение без учёта постоянной составляющей DC)
+		tmp_val_q13s = _IQ13div(tmp_val_q13s, _IQ13(71.12));
+		
+		//кф перевод Vreal -> Vout для регулятора
+		// можно закоментировать, если нужно значение на входе АЦП
+		//tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(24.72));
+		
+		// для внтренних нужд
+		Params.Page0.Reg220VN_ENT = (int16)(_IQ13int(tmp_val_q13s));
+		
+		//масштабирующий кф для пульта
+		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(10));		
+		
+		// для отображения на экране пульта
+		if (cnt1 == 0) Params.Page0.Reg220VN = (int16)(_IQ13int(tmp_val_q13s));
+			
 		
 /*************************************************************************************************/
 		

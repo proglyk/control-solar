@@ -239,6 +239,9 @@ typedef struct {
 		int16 Reg_SOLBAT_CH2_NUM_PARAL;
 		int16 Reg_SOLBAT_CH2_I_KZ;
 		int16 Reg_SOLBAT_CH2_I_MPP;			//38
+		
+		int16 Reg220VN_ENT;								//39  опи€ Reg220VN, но только дл€ внутреннего контура
+		
 	} Page0;
 	
 	// Page1 

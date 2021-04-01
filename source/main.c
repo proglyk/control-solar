@@ -291,17 +291,21 @@ Timer0Int(void)
 	Measurement();
 //	I2C_Sheduler();
 
-	//if (cnt > 5)	{
+	if (cnt > 20)	{
+//	if (1)	{
 		//Заряжалка
-	Charge_MPPT_v3(&(Params.ChargeControl), Params.Page0.Mode);
-		// Выходное
-	Invertor();
+		Charge_MPPT_v3(&(Params.ChargeControl), Params.Page0.Mode);
+		
 		// Реле
-	Relay();
-	//cnt = 0;
-	//} else {
-	//	cnt += 1;
-	//}
+		Relay();
+		
+		cnt = 0;
+	} else {
+		cnt += 1;
+	}
+	
+	// Выходное
+	Invertor();
 	
 	//GpioDataRegs.GPACLEAR.bit.GPIO10 = 1;
 /*----------------------------------------------------------------------------*/
@@ -342,12 +346,17 @@ Relay(void)
 void
 Invertor(void)
 {
+	_iq15 set;
+	_iq15 fb;
 	_iq15 regul;
 	
 	if (Params.Page0.fBridge & (Params.Page0.Mode == RUN))
 	{
-		pPiVout->Reference = _IQ15(Params.Page0.Reg_INVERTER_UOUT_SET);
-		regul = RegulatorPI(pPiVout, _IQ15(Params.Page0.Reg220VN));
+		set = _IQ15div(_IQ15(Params.Page0.Reg_INVERTER_UOUT_SET), _IQ15(220));
+		fb = _IQ15div(_IQ15(Params.Page0.Reg220VN_ENT), _IQ15(220));
+		
+		pPiVout->Reference = set;
+		regul = RegulatorPI(pPiVout, fb);
 		regul = _IQ15mpy(regul, _IQ15div(_IQ15(425), pPiVout->OutLimitMax));
 		Params.Page0.RegTemp0 = _IQ15int(regul);
 	}

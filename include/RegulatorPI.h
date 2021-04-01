@@ -5,17 +5,19 @@
 #include "DSP280x_Examples.h"
 #include "Global.h"
 
-#define KDIV 50
+#define KDIV_INV 1000
+#define KDIV_MPPT 50
 
 #define S16_MAX (32767)
 #define S16_MIN (-32768)
 
-#define Kp (0.1)
-#define KiVout (0.5)
-#define KiImppt1 (75)
-#define KiImppt2 (75)
+#define Kp (0.01)
+#define KiVout (0.04)	//I из регула PSIM делить на P т.е. 0.001/0.025=0.04
+#define KiImppt1 (25)
+#define KiImppt2 (25)
 
-#define LIMIT_MAX_VOUT 350	//умноженное на x1
+//#define LIMIT_MAX_VOUT 300	//умноженное на x1
+#define LIMIT_MAX_VOUT 1.36	//для set=220
 #define LIMIT_MIN_VOUT 0
 //#define LIMIT_MAX_IMPPT1 20	//умноженное на x10
 //#define LIMIT_MIN_IMPPT1 0
