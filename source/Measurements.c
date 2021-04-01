@@ -24,23 +24,23 @@ Measurement(void)
 	static Uint8 	cnt = 0;
 	static Uint16 cnt1 = 0;
 	
-	if (cnt == 40)
+	if (cnt == 20)
 	{
-		iq_tmp_val[0] = _IQ13div(iq_avVal[0], _IQ13(40));
-		iq_tmp_val[1] = _IQ13div(iq_avVal[1], _IQ13(40));
-		iq_tmp_val[2] = _IQ13div(iq_avVal[2], _IQ13(40));
-		iq_tmp_val[3] = _IQ13div(iq_avVal[3], _IQ13(40));
-		iq_tmp_val[4] = _IQ13div(iq_avVal[4], _IQ13(40));
-		iq_tmp_val[5] = _IQ13div(iq_avVal[5], _IQ13(40));
-		iq_tmp_val[6] = _IQ13div(iq_avVal[6], _IQ13(40));
-		iq_tmp_val[7] = _IQ13div(iq_avVal[7], _IQ13(40));
-		iq_tmp_val[8] = _IQ13div(iq_avVal[8], _IQ13(40)) - _IQ13(2);
+		iq_tmp_val[0] = _IQ13div(iq_avVal[0], _IQ13(20));
+		iq_tmp_val[1] = _IQ13div(iq_avVal[1], _IQ13(20));
+		iq_tmp_val[2] = _IQ13div(iq_avVal[2], _IQ13(20));
+		iq_tmp_val[3] = _IQ13div(iq_avVal[3], _IQ13(20));
+		iq_tmp_val[4] = _IQ13div(iq_avVal[4], _IQ13(20));
+		iq_tmp_val[5] = _IQ13div(iq_avVal[5], _IQ13(20));
+		iq_tmp_val[6] = _IQ13div(iq_avVal[6], _IQ13(20));
+		iq_tmp_val[7] = _IQ13div(iq_avVal[7], _IQ13(20));
+		iq_tmp_val[8] = _IQ13div(iq_avVal[8], _IQ13(20)) - _IQ13(2);
 		if (iq_tmp_val[8] < _IQ13(0)) iq_tmp_val[8] = _IQ13(0);
-		iq_tmp_val[9] = _IQ13div(iq_avVal[9], _IQ13(40));
+		iq_tmp_val[9] = _IQ13div(iq_avVal[9], _IQ13(20));
 		if (iq_tmp_val[9] < _IQ13(0)) iq_tmp_val[9] = _IQ13(0);
-		iq_tmp_val[10] = _IQ13div(iq_avVal[10], _IQ13(40));
+		iq_tmp_val[10] = _IQ13div(iq_avVal[10], _IQ13(20));
 		if (iq_tmp_val[10] < _IQ13(0)) iq_tmp_val[10] = _IQ13(0);
-		iq_tmp_val[11] = _IQ13div(iq_avVal[11], _IQ13(40)) - _IQ13(2);
+		iq_tmp_val[11] = _IQ13div(iq_avVal[11], _IQ13(20)) - _IQ13(2);
 		if (iq_tmp_val[11] < _IQ13(0)) iq_tmp_val[11] = _IQ13(0);
 		
 		/*************************************************************************************************/			
@@ -66,7 +66,7 @@ Measurement(void)
 		
 		//tmp_val_q13s = _IQ13mpy(tmp_val_q13[2], _IQ13(11.8));
 		//tmp_val_q13s = _IQ13mpy(tmp_val_q13[2], _IQ13(11.22));
-		tmp_val_q13s = _IQ13mpy(tmp_val_q13[2], _IQ13(30.0));
+		tmp_val_q13s = _IQ13mpy(tmp_val_q13[2], _IQ13(15.0));
 		tmp_val_q13s = _IQ13div(tmp_val_q13s, _IQ13(71.12));	//кф
 		tmp_val_q13s = _IQ13mpy(tmp_val_q13s, _IQ13(10));		//масштабирующий кф для пульта
 		
@@ -108,7 +108,7 @@ Measurement(void)
 /*************************************************************************************************/		
 		// A7:	currentBridge	IINVN
 
-		tmp_val_q13s = _IQ13mpy(_IQ13sqrt(iq_tmp_val[6]), _IQ13(30));
+		tmp_val_q13s = _IQ13mpy(_IQ13sqrt(iq_tmp_val[6]), _IQ13(15));
 		
 		tmp_val_q13[6] = _IQ13mpy(_IQ13(0.1), tmp_val_q13s) + _IQ13mpy(_IQ13(0.90), tmp_val_q13[6]);
 		
@@ -130,7 +130,7 @@ Measurement(void)
 		
 		// B0:	currentLoad		I220N
 		
-		tmp_val_q13s = _IQ13mpy(_IQ13sqrt(iq_tmp_val[7]), _IQ13(30));
+		tmp_val_q13s = _IQ13mpy(_IQ13sqrt(iq_tmp_val[7]), _IQ13(15));
 		
 		tmp_val_q13[7] = _IQ13mpy(_IQ13(0.1), tmp_val_q13s) + _IQ13mpy(_IQ13(0.90), tmp_val_q13[7]);
 		
@@ -258,7 +258,7 @@ Measurement(void)
 		iq_avVal[1] +=		iq_tempSensorValues[1];
 		//iq_avVal[2] +=		iq_tempSensorValues[2];
 		
-		tmp_val_q13s = 		_IQ13div(iq_tempSensorValues[2], _IQ13(30));
+		tmp_val_q13s = 		_IQ13div(iq_tempSensorValues[2], _IQ13(15));
 		iq_avVal[2] +=		_IQ13mpy(tmp_val_q13s, tmp_val_q13s);
 		
 		iq_avVal[3] +=		iq_tempSensorValues[3];
@@ -267,11 +267,11 @@ Measurement(void)
 		iq_avVal[4] +=		iq_tempSensorValues[4];
 		iq_avVal[5] += 		iq_tempSensorValues[5];
 		
-		tmp_val_q13s = 		_IQ13div(iq_tempSensorValues[6], _IQ13(30));
+		tmp_val_q13s = 		_IQ13div(iq_tempSensorValues[6], _IQ13(15));
 		iq_avVal[6] +=		_IQ13mpy(tmp_val_q13s, tmp_val_q13s);
 		
 		//iq_avVal[7] +=		iq_tempSensorValues[7];
-		tmp_val_q13s = 		_IQ13div(iq_tempSensorValues[7], _IQ13(30)); 
+		tmp_val_q13s = 		_IQ13div(iq_tempSensorValues[7], _IQ13(15)); 
 		iq_avVal[7] +=		_IQ13mpy(tmp_val_q13s, tmp_val_q13s);
 		
 		

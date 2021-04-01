@@ -79,7 +79,7 @@ AdcIntServiceRoutine(void)
 {
 	//static Uint32	bridge_cnt = 0;
 	
-	
+	GpioDataRegs.GPATOGGLE.bit.GPIO10 = 1;
 	
 //	adcvalues[0] = AdcRegs.ADCRESULT0;
 //	adcvalues[1] = 0;

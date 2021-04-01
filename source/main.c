@@ -177,9 +177,6 @@ main(void)
 	ptSciSlave2->Name = SCI_PULT;
 	
 	
-	
-	//DELAY_US(1000);
-	
 	PieCtrlRegs.PIEIER1.all = 0;
 	PieCtrlRegs.PIECTRL.bit.ENPIE = 1;
 	PieCtrlRegs.PIEIER1.bit.INTx6 = 1;	//ADCINT
@@ -288,7 +285,7 @@ Timer0Int(void)
 	static int16 temp = 0;
 
 /*----------------------------------------------------------------------------*/
-	GpioDataRegs.GPASET.bit.GPIO10 = 1;
+	//GpioDataRegs.GPASET.bit.GPIO10 = 1;
 	
 	Sensor();
 	Measurement();
@@ -306,7 +303,7 @@ Timer0Int(void)
 	//	cnt += 1;
 	//}
 	
-	GpioDataRegs.GPACLEAR.bit.GPIO10 = 1;
+	//GpioDataRegs.GPACLEAR.bit.GPIO10 = 1;
 /*----------------------------------------------------------------------------*/
 
 #if defined RT_MODE
